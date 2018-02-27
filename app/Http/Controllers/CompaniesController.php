@@ -14,9 +14,9 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-        $companies = Company::paginate(10);
+        $companies = Company::orderBy('name','asc')->paginate(1);
 
-        return view('companies.index', ['companies' => $companies]);
+        return view('companies.index')->with('companies',$companies);
     }
 
     /**
@@ -48,7 +48,8 @@ class CompaniesController extends Controller
      */
     public function show($id)
     {
-        //
+        $company = Company::find($id);
+        return view('companies.show')->with('company', $company);
     }
 
     /**
@@ -59,7 +60,8 @@ class CompaniesController extends Controller
      */
     public function edit($id)
     {
-        //
+        $company = Company::find($id);
+        return view('companies.edit')->with('company', $company);
     }
 
     /**
@@ -71,7 +73,20 @@ class CompaniesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //check the data that is sent
+        $this->validate($request, [
+            'name' => 'required|max:255',
+            'description' => 'sometimes|max:255'
+          ]);
+        //Saving data to database
+        $company = Company::find($id);
+        $company->name = $request->input('name');
+        $company->description = $request->input('description');
+          
+        $company->save();
+        return redirect()->route('companies.show', $id)->with('success', 'Company updated successfully');
+        //in case of failure
+        //return back()->withInput();
     }
 
     /**

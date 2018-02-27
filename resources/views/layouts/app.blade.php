@@ -18,6 +18,8 @@
             @include('_includes.navbar.main')
 
         <main class="container py-4">
+            @include('_includes.partials.errors')
+            @include('_includes.partials.success')
             @yield('content')
         </main>
     </div>
